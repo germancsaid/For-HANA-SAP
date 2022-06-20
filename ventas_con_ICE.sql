@@ -1,3 +1,39 @@
+--calculo ice especifico por linea
+DECLARE Factor DECIMAL(10,3);
+
+SELECT T0."U_ICE_BS_L" INTO Factor FROM 
+"SBA_PRD"."@LB_ICE"  T0  
+INNER JOIN OITM T1 ON T0."Code" = T1."U_Tipo_ICE" 
+WHERE T1."ItemCode" =$[$38.1.0];
+
+SELECT (($[INV1."Volume"]/1)*:Factor) AS TOTAL FROM DUMMY;
+
+--calculo ice porcentual por linea trabajando con una tabla auxiliar que vincula la alicupta de los ices por tipo de articulos
+DECLARE Factor DECIMAL(10,3);
+
+SELECT T0."U_ICE_PORC" INTO Factor FROM 
+"SBA_PRD"."@LB_ICE"  T0  
+INNER JOIN OITM T1 ON T0."Code" = T1."U_Tipo_ICE" 
+WHERE T1."ItemCode" =$[$38.1.0];
+
+SELECT ($[$38.21.number]*:Factor) AS TOTAL FROM DUMMY;
+
+--suma de ice esp y porc en la linea
+SELECT (($[$38.112.number])+($[$38.116.number])) AS TOTAL FROM DUMMY
+
+--tipo de ice en el gasto 3
+SELECT (3) AS GASTO FROM DUMMY
+
+
+--tipo de ice en el gasto 4
+SELECT (3) AS GASTO FROM DUMMY
+
+
+--total de ice por documento
+SELECT $[OINV."TotalExpns"] AS TOTAL FROM DUMMY
+
+
+
 /*-*-*-*-*-*-*-* VENTAS LIQUIDADAS v1.1 *-*-*-*-*-*-*/
 SELECT
 T1."DocDate",--fecha de factura
