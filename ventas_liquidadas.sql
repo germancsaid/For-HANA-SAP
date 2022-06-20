@@ -1,4 +1,4 @@
-/*-*-*-*-*-*-*-* VENTAS LIQUIDADAS v1.0 *-*-*-*-*-*-*/
+/*-*-*-*-*-*-*-* VENTAS LIQUIDADAS v1.1 *-*-*-*-*-*-*/
 SELECT
 T1."DocDate",--fecha de factura
 T1."NumAtCard" AS "N° Fact",--numero de factura
@@ -30,6 +30,8 @@ INNER JOIN OINV T1 ON T0."DocEntry" = T1."DocEntry"
 INNER JOIN OWHS T2 ON T0."WhsCode" = T2."WhsCode" 
 INNER JOIN OITM T3 ON T0."ItemCode" = T3."ItemCode" 
 INNER JOIN OCTG T4 ON T1."GroupNum" = T4."GroupNum" 
+
+----Este inner join transpone las columnas verticales horizontalmente
 INNER JOIN (SELECT
 	 T0."DocEntry",
 	 T0."LineNum",
@@ -39,3 +41,16 @@ FROM INV2 T0
 GROUP BY T0."DocEntry", T0."LineNum") T5 ON T0."DocEntry" = T5."DocEntry" AND T0."LineNum" = T5."LineNum"
 WHERE T1."DocDate" >= [%0] AND T1."DocDate" <= [%1]
 ORDER BY T1."NumAtCard";
+
+/*Busqueda formateada para los calculos automaticos del ICE desde una tabla creada con los valores de
+las alicuotas*/
+
+--declaras una funcion decimal con la cantidad de digitos (10) y decimales (3)
+DECLARE Factor DECIMAL(10,3);
+
+SELECT T0."U_ICE_BS_L" INTO Factor FROM
+"SBA_PRD"."@LB_ICE" T0
+INNER JOIN OITM T1 ON T0."Code" = T1."U_Tipo_ICE"
+WHERE T1."ItemCode" =$[$38.1.0];
+--llamar a un dato del propio documento llenado
+SELECT (($[INV1."Volume"]/1000)*:Factor) AS TOTAL FROM DUMMY;
