@@ -1,0 +1,27 @@
+set schema "BD_GRUPO_FP_PRODPR2";
+
+ALTER PROCEDURE ACB_TN_OITM (in id nvarchar(255), in transtype varchar(1), out error int, out errormsg nvarchar(200))
+AS
+BEGIN
+-- APZ: VALIDACIONES DATOS MAESTROS DE ARTICULOS
+
+
+    IF (transtype='A' or transtype='U') --1
+    THEN --1
+       
+        DECLARE NUM INT:=0;
+        
+        SELECT COUNT(T0."ItemCode") INTO NUM
+        FROM OITM T0 
+        WHERE T0."ItemCode" = id AND T0."CodeBars" = (SELECT T0."CodeBars" FROM OITM T0 WHERE T0."ItemCode"=id);
+        
+        IF :NUM > 0 
+        THEN --2
+            error :='001';    
+            errormsg := 'El codigo de barra ya existe en el sistema';
+            NUM:=0;
+
+        END IF;--2
+
+    END IF;--1  
+END;
