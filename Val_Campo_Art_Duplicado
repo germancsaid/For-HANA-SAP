@@ -1,8 +1,7 @@
 SET SCHEMA "BD_GRUPO_FP";		
 ALTER PROCEDURE ACB_TN_OITM (in id nvarchar(255), in transtype varchar(1), out error int, out errormsg nvarchar(200))		
 AS		
-BEGIN		
-#¿NOMBRE?		
+BEGIN	
 		
 		
     IF (transtype='A' or transtype='U') --1		
